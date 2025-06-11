@@ -34,7 +34,7 @@ export const PlayerList = ({ players }: PlayerListProps) => {
       {Object.values(players).map((player) => (
         <PlayerItem key={player.id}>
           <ColorSquare color={player.color} />
-          <span>{player.name}</span>
+          <span>{player.name} <b style={{marginLeft: 8}}>({player.score ?? 0})</b></span>
         </PlayerItem>
       ))}
     </List>

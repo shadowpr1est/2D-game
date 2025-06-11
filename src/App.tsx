@@ -6,8 +6,9 @@ import { PlayerList } from './components/PlayerList';
 import { LoginForm } from './components/LoginForm';
 import { usePlayerMovement } from './hooks/usePlayerMovement';
 import { useRealtimePlayers } from './hooks/useRealtimePlayers';
+import { useRealtimeFood } from './hooks/useRealtimeFood';
 import { firebaseService } from './services/firebase';
-import { GameConfig, Position } from './types/game';
+import { GameConfig, Position, Food } from './types/game';
 
 const Container = styled.div`
   display: flex;
@@ -23,8 +24,16 @@ const gameConfig: GameConfig = {
   width: 800,
   height: 600,
   playerSize: 16,
-  speed: 1
+  speed: 4
 };
+
+function getRandomFood(config: GameConfig): Food {
+  return {
+    id: uuidv4(),
+    x: Math.floor(Math.random() * (config.width - config.playerSize)),
+    y: Math.floor(Math.random() * (config.height - config.playerSize)),
+  };
+}
 
 function App() {
   const [playerId] = useState(uuidv4());
@@ -34,21 +43,48 @@ function App() {
   });
   const [name, setName] = useState<string | null>(null);
   const [color] = useState<string>(`#${Math.floor(Math.random()*16777215).toString(16)}`);
+  const [initialized, setInitialized] = useState(false);
 
   const players = useRealtimePlayers(playerId);
+  const food = useRealtimeFood();
 
   usePlayerMovement(playerId, position, setPosition, gameConfig);
 
+  // Генерируем food только если их нет
   useEffect(() => {
-    if (!name) return;
+    firebaseService.getAllFood().then(existing => {
+      if (!existing || existing.length === 0) {
+        for (let i = 0; i < 10; i++) {
+          firebaseService.addFood(getRandomFood(gameConfig));
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!name || initialized) return;
     firebaseService.addPlayer({
       id: playerId,
       x: position.x,
       y: position.y,
       color,
-      name
+      name,
+      score: 0
     });
+    setInitialized(true);
+    // eslint-disable-next-line
   }, [playerId, name]);
+
+  // Обработка сбора точки
+  const handleCollectFood = (foodId: string) => {
+    // Удаляем точку
+    firebaseService.removeFood(foodId);
+    // +1 очко игроку
+    const currentScore = players[playerId]?.score ?? 0;
+    firebaseService.updatePlayerScore(playerId, currentScore + 1);
+    // Можно добавить новую точку, если хочешь бесконечный режим:
+    // firebaseService.addFood(getRandomFood(gameConfig));
+  };
 
   if (!name) {
     return (
@@ -60,7 +96,13 @@ function App() {
 
   return (
     <Container>
-      <GameField players={players} config={gameConfig} />
+      <GameField
+        players={players}
+        config={gameConfig}
+        food={food}
+        onCollectFood={handleCollectFood}
+        playerId={playerId}
+      />
       <PlayerList players={players} />
     </Container>
   );

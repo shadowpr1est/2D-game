@@ -4,6 +4,13 @@ export interface Player {
   y: number;
   color: string;
   name: string;
+  score?: number;
+}
+
+export interface Food {
+  id: string;
+  x: number;
+  y: number;
 }
 
 export interface GameConfig {
