@@ -12,6 +12,7 @@ const firebaseConfig = {
   measurementId: "G-MF3T8L64E1"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -26,7 +27,9 @@ export class FirebaseService {
 
   addPlayer(player: Player): void {
     const playerRef = ref(this.db, `players/${player.id}`);
-    set(playerRef, player);
+    set(playerRef, player)
+    .then(() => console.log('Player added to Firebase:', player))
+    .catch((err) => console.error('Firebase write error:', err));
     onDisconnect(playerRef).remove();
   }
 
