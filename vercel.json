@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "vite.config.ts", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "env": {
+    "VITE_FIREBASE_API_KEY": "AIzaSyCKMi-NxvOfll1SIXNWfrGVxS3S8FyiqII",
+    "VITE_FIREBASE_AUTH_DOMAIN": "d-game-cea42.firebaseapp.com",
+    "VITE_FIREBASE_DATABASE_URL": "https://d-game-cea42.firebaseio.com",
+    "VITE_FIREBASE_PROJECT_ID": "d-game-cea42",
+    "VITE_FIREBASE_STORAGE_BUCKET": "d-game-cea42.firebasestorage.app",
+    "VITE_FIREBASE_MESSAGING_SENDER_ID": "753840452511",
+    "VITE_FIREBASE_APP_ID": "1:753840452511:web:bc7dc8d174198a0fcc43aa"
+  }
+} 
