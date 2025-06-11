@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { GameField } from './components/GameField';
 import { PlayerList } from './components/PlayerList';
+import { LoginForm } from './components/LoginForm';
 import { usePlayerMovement } from './hooks/usePlayerMovement';
 import { useRealtimePlayers } from './hooks/useRealtimePlayers';
 import { firebaseService } from './services/firebase';
@@ -21,7 +22,7 @@ const Container = styled.div`
 const gameConfig: GameConfig = {
   width: 800,
   height: 600,
-  playerSize: 4,
+  playerSize: 16,
   speed: 1
 };
 
@@ -31,24 +32,31 @@ function App() {
     x: Math.floor(Math.random() * (gameConfig.width - gameConfig.playerSize)),
     y: Math.floor(Math.random() * (gameConfig.height - gameConfig.playerSize))
   });
+  const [name, setName] = useState<string | null>(null);
+  const [color] = useState<string>(`#${Math.floor(Math.random()*16777215).toString(16)}`);
 
   const players = useRealtimePlayers(playerId);
 
   usePlayerMovement(playerId, position, setPosition, gameConfig);
 
   useEffect(() => {
-    // Генерируем случайный цвет для игрока
-    const randomColor = `#${Math.floor(Math.random()*16777215).toString(16)}`;
-    
-    // Добавляем игрока при монтировании компонента
+    if (!name) return;
     firebaseService.addPlayer({
       id: playerId,
       x: position.x,
       y: position.y,
-      color: randomColor,
-      name: `Player ${playerId.slice(0, 4)}`
+      color,
+      name
     });
-  }, [playerId]);
+  }, [playerId, name]);
+
+  if (!name) {
+    return (
+      <Container>
+        <LoginForm onSubmit={setName} />
+      </Container>
+    );
+  }
 
   return (
     <Container>
