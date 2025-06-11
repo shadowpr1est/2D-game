@@ -5,6 +5,7 @@ import { Player } from '../types/game';
 const firebaseConfig = {
   apiKey: "AIzaSyCKMi-NxvOfll1SIXNWfrGVxS3S8FyiqII",
   authDomain: "d-game-cea42.firebaseapp.com",
+  databaseURL: "https://d-game-cea42-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "d-game-cea42",
   storageBucket: "d-game-cea42.firebasestorage.app",
   messagingSenderId: "753840452511",
