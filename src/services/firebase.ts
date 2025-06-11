@@ -3,14 +3,13 @@ import { getDatabase, ref, onDisconnect, onChildAdded, onChildRemoved, onChildCh
 import { Player } from '../types/game';
 
 const firebaseConfig = {
-  // Замените на ваши данные из Firebase Console
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyCKMi-NxvOfll1SIXNWfrGVxS3S8FyiqII",
+  authDomain: "d-game-cea42.firebaseapp.com",
+  projectId: "d-game-cea42",
+  storageBucket: "d-game-cea42.firebasestorage.app",
+  messagingSenderId: "753840452511",
+  appId: "1:753840452511:web:bc7dc8d174198a0fcc43aa",
+  measurementId: "G-MF3T8L64E1"
 };
 
 const app = initializeApp(firebaseConfig);
