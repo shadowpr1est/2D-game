@@ -50,7 +50,7 @@ function App() {
 
   usePlayerMovement(playerId, position, setPosition, gameConfig);
 
-  // Генерируем food только если их нет
+  // Генерируем food только если их нет при старте
   useEffect(() => {
     firebaseService.getAllFood().then(existing => {
       if (!existing || existing.length === 0) {
@@ -60,6 +60,15 @@ function App() {
       }
     });
   }, []);
+
+  // Если все food исчезли — сгенерировать новые
+  useEffect(() => {
+    if (Object.keys(food).length === 0) {
+      for (let i = 0; i < 10; i++) {
+        firebaseService.addFood(getRandomFood(gameConfig));
+      }
+    }
+  }, [food]);
 
   useEffect(() => {
     if (!name || initialized) return;
@@ -82,8 +91,6 @@ function App() {
     // +1 очко игроку
     const currentScore = players[playerId]?.score ?? 0;
     firebaseService.updatePlayerScore(playerId, currentScore + 1);
-    // Можно добавить новую точку, если хочешь бесконечный режим:
-    // firebaseService.addFood(getRandomFood(gameConfig));
   };
 
   if (!name) {
